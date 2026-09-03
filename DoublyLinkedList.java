@@ -116,5 +116,41 @@ public class DoublyLinkedList<E> {
 
     public void group(){
 
+        if (size == 0) return;
+        
+        // pointer to iterate through the list
+        Node<E> curr = header.next;
+
+        // pointer that points to the header/ the last placed null block being built
+        Node<E> insertPos = header;
+
+        // iterate through the list
+        while (curr != trailer) {
+
+            // first capture the node after curr, so we know where to continue from 
+            Node<E> next = curr.next;
+
+            if (curr.getElement() == null) {
+
+                // 1. detach this null node from its current position
+                Node<E> beforeCurr = curr.getPrev();
+                Node<E> afterCurr = curr.getNext();
+
+                beforeCurr.setNext(afterCurr);
+                afterCurr.setPrev(beforeCurr);
+
+                // 2. splice curr in right after nonNullPointer
+                Node<E> insertPosNext = insertPos.getNext();
+
+                curr.setNext(insertPos.getNext());
+                insertPos.setNext(curr);
+                insertPosNext.setPrev(curr);
+                curr.setPrev(insertPos);
+
+                insertPos = insertPos.next;
+            }
+            curr = next;
+        }
+
     }
 }
